@@ -40,38 +40,36 @@ export function CollapsibleSidebar() {
   ];
 
   return (
-    <>
-      <Sidebar>
-        <SidebarHeader className="flex h-16 items-center px-6">
-          <FileCode className="h-6 w-6 text-primary" />
-          <span className="ml-2 text-lg font-semibold">Battery Data Alchemy</span>
-          <div className="flex-1" />
-          <SidebarTrigger>
-            {state === "expanded" ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </SidebarTrigger>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            {links.map((link) => {
-              const isActive = location.pathname === link.href;
-              return (
-                <SidebarMenuItem key={link.href}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={isActive}
-                    tooltip={link.label}
-                  >
-                    <Link to={link.href}>
-                      <link.icon className="h-5 w-5" />
-                      <span>{link.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
-        </SidebarContent>
-      </Sidebar>
-    </>
+    <Sidebar>
+      <SidebarHeader className="flex h-16 items-center px-6">
+        <FileCode className="h-6 w-6 text-primary" />
+        <span className="ml-2 text-lg font-semibold">Battery Data Alchemy</span>
+        <div className="flex-1" />
+        <SidebarTrigger>
+          {state === "expanded" ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        </SidebarTrigger>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarMenu>
+          {links.map((link) => {
+            const isActive = location.pathname === link.href;
+            return (
+              <SidebarMenuItem key={link.href}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={isActive}
+                  tooltip={link.label}
+                >
+                  <Link to={link.href}>
+                    <link.icon className="h-5 w-5" />
+                    <span>{link.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarContent>
+    </Sidebar>
   );
 }

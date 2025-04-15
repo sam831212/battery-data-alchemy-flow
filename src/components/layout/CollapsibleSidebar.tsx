@@ -41,15 +41,23 @@ export function CollapsibleSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="flex h-16 items-center px-6">
-        <FileCode className="h-6 w-6 text-primary" />
-        <span className="ml-2 text-lg font-semibold">Battery Data Alchemy</span>
+      <SidebarHeader className="flex h-16 items-center border-b border-sidebar-border bg-sidebar px-4">
+        <div className="flex items-center gap-2 px-2">
+          <FileCode className="h-6 w-6 text-battery-500" />
+          <span className="text-lg font-semibold text-sidebar-foreground">
+            Battery Data Alchemy
+          </span>
+        </div>
         <div className="flex-1" />
-        <SidebarTrigger>
-          {state === "expanded" ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        <SidebarTrigger className="h-8 w-8 rounded-md hover:bg-sidebar-accent">
+          {state === "expanded" ? (
+            <ChevronLeft className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
         </SidebarTrigger>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-2 py-4">
         <SidebarMenu>
           {links.map((link) => {
             const isActive = location.pathname === link.href;
@@ -59,10 +67,24 @@ export function CollapsibleSidebar() {
                   asChild 
                   isActive={isActive}
                   tooltip={link.label}
+                  className={cn(
+                    "transition-colors duration-200",
+                    isActive 
+                      ? "bg-battery-500/10 text-battery-600 hover:bg-battery-500/20" 
+                      : "hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                  )}
                 >
-                  <Link to={link.href}>
-                    <link.icon className="h-5 w-5" />
-                    <span>{link.label}</span>
+                  <Link to={link.href} className="flex items-center gap-3">
+                    <link.icon className={cn(
+                      "h-5 w-5",
+                      isActive ? "text-battery-500" : "text-muted-foreground"
+                    )} />
+                    <span className={cn(
+                      "font-medium",
+                      isActive ? "text-battery-700" : "text-sidebar-foreground"
+                    )}>
+                      {link.label}
+                    </span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

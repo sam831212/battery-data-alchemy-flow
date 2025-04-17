@@ -1,0 +1,263 @@
+
+# Battery Data Alchemy Database Schema
+
+version: "1.0.0"
+
+# Database schema definition
+tables:
+  # Test metadata table
+  test:
+    description: "Stores metadata about battery tests"
+    columns:
+      - name: "id"
+        type: "INTEGER"
+        primary_key: true
+        auto_increment: true
+      - name: "name"
+        type: "TEXT"
+        nullable: false
+      - name: "description"
+        type: "TEXT"
+        nullable: true
+      - name: "created_at"
+        type: "TIMESTAMP"
+        default: "CURRENT_TIMESTAMP"
+      - name: "machine_type"
+        type: "TEXT"
+        nullable: false
+      - name: "experiment_type"
+        type: "TEXT"
+        nullable: false
+      - name: "nominal_capacity"
+        type: "REAL"
+        nullable: true
+      - name: "imported_by"
+        type: "TEXT"
+        nullable: true
+    
+  # Test steps table
+  test_step:
+    description: "Stores information about test steps (charge, discharge, rest, etc.)"
+    columns:
+      - name: "id"
+        type: "INTEGER"
+        primary_key: true
+        auto_increment: true
+      - name: "test_id"
+        type: "INTEGER"
+        nullable: false
+        foreign_key:
+          table: "test"
+          column: "id"
+          on_delete: "CASCADE"
+      - name: "step_number"
+        type: "INTEGER"
+        nullable: false
+      - name: "step_type"
+        type: "TEXT"
+        nullable: false
+      - name: "start_time"
+        type: "TIMESTAMP"
+        nullable: false
+      - name: "end_time"
+        type: "TIMESTAMP"
+        nullable: false
+      - name: "duration"
+        type: "REAL"
+        nullable: false
+        comment: "Duration in seconds"
+      - name: "capacity"
+        type: "REAL"
+        nullable: true
+        comment: "Capacity in Ah"
+      - name: "energy"
+        type: "REAL"
+        nullable: true
+        comment: "Energy in Wh"
+      - name: "c_rate"
+        type: "REAL"
+        nullable: true
+      - name: "start_voltage"
+        type: "REAL"
+        nullable: true
+        comment: "Voltage in V"
+      - name: "end_voltage"
+        type: "REAL"
+        nullable: true
+        comment: "Voltage in V"
+      - name: "start_current"
+        type: "REAL"
+        nullable: true
+        comment: "Current in A"
+      - name: "end_current"
+        type: "REAL"
+        nullable: true
+        comment: "Current in A"
+      - name: "min_temperature"
+        type: "REAL"
+        nullable: true
+        comment: "Temperature in °C"
+      - name: "max_temperature"
+        type: "REAL"
+        nullable: true
+        comment: "Temperature in °C"
+      - name: "avg_temperature"
+        type: "REAL"
+        nullable: true
+        comment: "Temperature in °C"
+    indexes:
+      - name: "idx_test_step_test_id"
+        columns: ["test_id"]
+      - name: "idx_test_step_step_type"
+        columns: ["step_type"]
+        
+  # Test data points table
+  test_data:
+    description: "Stores detailed test data points"
+    columns:
+      - name: "id"
+        type: "INTEGER"
+        primary_key: true
+        auto_increment: true
+      - name: "test_id"
+        type: "INTEGER"
+        nullable: false
+        foreign_key:
+          table: "test"
+          column: "id"
+          on_delete: "CASCADE"
+      - name: "step_id"
+        type: "INTEGER"
+        nullable: false
+        foreign_key:
+          table: "test_step"
+          column: "id"
+          on_delete: "CASCADE"
+      - name: "timestamp"
+        type: "TIMESTAMP"
+        nullable: false
+      - name: "voltage"
+        type: "REAL"
+        nullable: false
+        comment: "Voltage in V"
+      - name: "current"
+        type: "REAL"
+        nullable: false
+        comment: "Current in A"
+      - name: "capacity"
+        type: "REAL"
+        nullable: true
+        comment: "Cumulative capacity in Ah"
+      - name: "energy"
+        type: "REAL"
+        nullable: true
+        comment: "Cumulative energy in Wh"
+      - name: "power"
+        type: "REAL"
+        nullable: true
+        comment: "Instantaneous power in W"
+      - name: "temperature"
+        type: "REAL"
+        nullable: true
+        comment: "Temperature in °C"
+      - name: "internal_resistance"
+        type: "REAL"
+        nullable: true
+        comment: "Internal resistance in Ohms"
+      - name: "cycle_number"
+        type: "INTEGER"
+        nullable: true
+      - name: "step_time"
+        type: "REAL"
+        nullable: true
+        comment: "Time since step start in seconds"
+      - name: "test_time"
+        type: "REAL"
+        nullable: true
+        comment: "Time since test start in seconds"
+      - name: "state_of_charge"
+        type: "REAL"
+        nullable: true
+        comment: "Calculated SOC in %"
+    indexes:
+      - name: "idx_test_data_test_id"
+        columns: ["test_id"]
+      - name: "idx_test_data_step_id"
+        columns: ["step_id"]
+      - name: "idx_test_data_timestamp"
+        columns: ["timestamp"]
+      - name: "idx_test_data_cycle"
+        columns: ["cycle_number"]
+        
+  # Analysis results table
+  analysis_result:
+    description: "Stores results from analysis modules"
+    columns:
+      - name: "id"
+        type: "INTEGER"
+        primary_key: true
+        auto_increment: true
+      - name: "test_id"
+        type: "INTEGER"
+        nullable: false
+        foreign_key:
+          table: "test"
+          column: "id"
+          on_delete: "CASCADE"
+      - name: "analysis_type"
+        type: "TEXT"
+        nullable: false
+      - name: "created_at"
+        type: "TIMESTAMP"
+        default: "CURRENT_TIMESTAMP"
+      - name: "parameters"
+        type: "TEXT"
+        nullable: true
+        comment: "JSON string of analysis parameters"
+      - name: "results"
+        type: "TEXT"
+        nullable: false
+        comment: "JSON string of analysis results"
+    indexes:
+      - name: "idx_analysis_test_id"
+        columns: ["test_id"]
+      - name: "idx_analysis_type"
+        columns: ["analysis_type"]
+
+# Relationships
+relationships:
+  - name: "test_to_steps"
+    from:
+      table: "test"
+      column: "id"
+    to:
+      table: "test_step"
+      column: "test_id"
+    type: "one_to_many"
+    
+  - name: "test_to_data"
+    from:
+      table: "test"
+      column: "id"
+    to:
+      table: "test_data"
+      column: "test_id"
+    type: "one_to_many"
+    
+  - name: "step_to_data"
+    from:
+      table: "test_step"
+      column: "id"
+    to:
+      table: "test_data"
+      column: "step_id"
+    type: "one_to_many"
+    
+  - name: "test_to_analysis"
+    from:
+      table: "test"
+      column: "id"
+    to:
+      table: "analysis_result"
+      column: "test_id"
+    type: "one_to_many"

@@ -4,13 +4,13 @@
 ## 1. Project Setup
 - [x] Initialize Repository: Set up a Git repository and establish the main branch structure.
 - [x] Directory Structure: Create the folder and file skeleton based on the planned architecture.
-- [ ] Environment Setup: Set up a virtual environment and install initial dependencies.
+- [x] Environment Setup: Set up a virtual environment and install initial dependencies.
 - [x] Documentation Base: Create a README.md with an overview, setup instructions, and contribution guidelines.
 
 ## 2. Configuration & Dynamic Module Loading
 - [x] Define YAML Configs: Create pipeline_config.yaml and database_schema.yaml.
 - [x] Dynamic Loader: Implement dynamic_loader.ts to support loading modules based on YAML configuration.
-- [ ] Module Registration: Set up a standardized method for modules to self-register for dynamic loading.
+- [x] Module Registration: Set up a standardized method for modules to self-register for dynamic loading.
 
 ## 3. Data Ingestion Module
 - [ ] Abstract BaseIngestor: Develop base_ingestor.ts defining methods like load_data() and preprocess().

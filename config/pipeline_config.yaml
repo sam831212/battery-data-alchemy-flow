@@ -1,0 +1,86 @@
+
+# Battery Data Alchemy Pipeline Configuration
+
+# Global configuration
+global:
+  version: "1.0.0"
+  debug: true
+  logging_level: "info"
+
+# Pipeline definition - ordered list of processing stages
+pipeline:
+  name: "default_pipeline"
+  description: "Default data processing pipeline for battery test data"
+  stages:
+    - id: "data_ingestion"
+      type: "ingestor"
+      name: "arbin_cycler"
+      config:
+        file_format: "csv"
+        header_rows: 3
+        timestamp_format: "%Y-%m-%d %H:%M:%S"
+        required_columns:
+          - "Voltage(V)"
+          - "Current(A)"
+          - "Capacity(Ah)"
+          - "Time(s)"
+        
+    - id: "experiment_analysis"
+      type: "experiment"
+      name: "c_rate_cycling"
+      config:
+        nominal_capacity: 5.0  # Ah
+        c_rate_calculation: true
+        soc_calculation: true
+        temperature_compensation: false
+        
+    - id: "data_persistence"
+      type: "persistor"
+      name: "sqlite_db"
+      config:
+        db_path: "./data/battery_data.db"
+        table_prefix: "test_"
+        batch_size: 1000
+
+# Machine type configurations
+machine_types:
+  - name: "arbin_cycler"
+    description: "Arbin Battery Testing System"
+    file_extensions: [".csv", ".txt"]
+    ingestor: "arbin_ingestor"
+    
+  - name: "biologic_cycler"
+    description: "BioLogic Potentiostat/Galvanostat"
+    file_extensions: [".mpt", ".txt"]
+    ingestor: "biologic_ingestor"
+
+# Experiment type configurations
+experiment_types:
+  - name: "c_rate_cycling"
+    description: "Standard C-rate cycling test"
+    parameters:
+      - name: "nominal_capacity"
+        type: "float"
+        required: true
+        
+  - name: "calendar_aging"
+    description: "Calendar aging test at controlled temperature and SOC"
+    parameters:
+      - name: "temperature"
+        type: "float"
+        required: true
+      - name: "target_soc"
+        type: "float"
+        required: true
+
+# Available data transformations
+transformations:
+  - name: "capacity_fade"
+    description: "Calculate capacity fade over cycles"
+    input: ["cycle_number", "discharge_capacity"]
+    output: ["capacity_fade_percent"]
+    
+  - name: "coulombic_efficiency"
+    description: "Calculate coulombic efficiency"
+    input: ["charge_capacity", "discharge_capacity"]
+    output: ["coulombic_efficiency"]

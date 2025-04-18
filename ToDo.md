@@ -1,4 +1,3 @@
-
 # Project ToDo List
 
 ## 1. Project Setup
@@ -13,9 +12,9 @@
 - [x] Module Registration: Set up a standardized method for modules to self-register for dynamic loading.
 
 ## 3. Data Ingestion Module
-- [ ] Abstract BaseIngestor: Develop base_ingestor.ts defining methods like load_data() and preprocess().
-- [ ] Machine-Specific Ingestion: Implement modules (e.g., machine_type_x.ts) for each machine type.
-- [ ] File Upload Integration: Develop components for CSV file upload and meta information extraction.
+- [x] Abstract BaseIngestor: Develop base_ingestor.ts defining methods like load_data() and preprocess().
+- [x] Machine-Specific Ingestion: Implement modules (e.g., machine_type_x.ts) for each machine type.
+- [x] File Upload Integration: Develop components for CSV file upload and meta information extraction.
 
 ## 4. Experiment Analysis & Preprocessing
 - [ ] Abstract Experiment Class: Create base_experiment.ts for experiment-specific calculations.

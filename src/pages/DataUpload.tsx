@@ -1,20 +1,13 @@
-
 import React, { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { FileUpload } from "@/components/upload/FileUpload";
 import { ExperimentForm } from "@/components/experiment/ExperimentForm";
-import { Button } from "@/components/ui/button";
-import { 
-  AlertTriangle,
-  Check,
-  ChevronRight,
-  HardDrive, 
-  Upload as UploadIcon
-} from "lucide-react";
-import { PipelineStages } from "@/components/pipeline/PipelineStages";
 import { StageStatusType } from "@/components/pipeline/StageStatus";
 import { useToast } from "@/components/ui/use-toast";
-import { DataTable } from "@/components/data/DataTable";
+import { ProcessingPipeline } from "@/components/upload/ProcessingPipeline";
+import { ValidationResultDisplay } from "@/components/upload/ValidationResultDisplay";
+import { DataPreviewSection } from "@/components/upload/DataPreviewSection";
+import { ActionButtons } from "@/components/upload/ActionButtons";
 
 const DataUpload = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -23,10 +16,8 @@ const DataUpload = () => {
   const [pipelineStarted, setPipelineStarted] = useState(false);
   const [validationStatus, setValidationStatus] = useState<"idle" | "success" | "warning" | "error">("idle");
   const [isReadyToCommit, setIsReadyToCommit] = useState(false);
-  const { toast } = useToast();
-
-  // Mock preview data
   const [previewData, setPreviewData] = useState<any[]>([]);
+  const { toast } = useToast();
 
   const pipelineStages = [
     { name: "ingestion", label: "Data Ingestion", status: "not-started" as StageStatusType },
@@ -72,25 +63,17 @@ const DataUpload = () => {
     setPipelineStarted(true);
     setIsProcessing(true);
     setCurrentStage(0);
-    
-    // Update first stage to pending
     updateStageStatus(0, "pending");
 
-    // Simulate pipeline stages with delays
     simulateStage(0, 2000, "completed")
       .then(() => simulateStage(1, 3000, "completed"))
       .then(() => simulateStage(2, 2500, "completed"))
       .then(() => {
-        // For validation stage, randomly choose between success, warning, or error
         const outcomes = ["completed", "warning"] as const;
         const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
         return simulateStage(3, 4000, randomOutcome).then(() => {
           setValidationStatus(randomOutcome === "completed" ? "success" : "warning");
-          
-          // Generate mock preview data after validation
           generateMockPreviewData();
-          
-          // Set ready to commit if validation passed or has warnings
           setIsReadyToCommit(true);
         });
       })
@@ -158,7 +141,6 @@ const DataUpload = () => {
   };
 
   const handleCommitToDatabase = () => {
-    // Simulate database persistence
     updateStageStatus(4, "pending");
     
     setTimeout(() => {
@@ -169,47 +151,6 @@ const DataUpload = () => {
         variant: "default",
       });
     }, 3000);
-  };
-
-  const columns = [
-    { key: "id", header: "Cell ID" },
-    { key: "cycle", header: "Cycle" },
-    { key: "capacity", header: "Capacity (Ah)" },
-    { key: "voltage", header: "Voltage (V)" },
-    { key: "temperature", header: "Temp (°C)" },
-    { key: "timestamp", header: "Date" },
-  ];
-
-  const getValidationStatusIndicator = () => {
-    switch (validationStatus) {
-      case "success":
-        return (
-          <div className="flex items-center gap-2 rounded-md bg-statusSuccess/10 p-3 text-statusSuccess">
-            <Check className="h-5 w-5" />
-            <span>All data passed validation. Ready to commit to database.</span>
-          </div>
-        );
-      case "warning":
-        return (
-          <div className="flex items-center gap-2 rounded-md bg-statusWarning/10 p-3 text-statusWarning">
-            <AlertTriangle className="h-5 w-5" />
-            <span>
-              Some non-critical validation issues detected. Review the data before committing.
-            </span>
-          </div>
-        );
-      case "error":
-        return (
-          <div className="flex items-center gap-2 rounded-md bg-statusError/10 p-3 text-statusError">
-            <AlertTriangle className="h-5 w-5" />
-            <span>
-              Validation failed. Please fix the issues and try again.
-            </span>
-          </div>
-        );
-      default:
-        return null;
-    }
   };
 
   return (
@@ -224,80 +165,31 @@ const DataUpload = () => {
 
         <div className="grid gap-8 md:grid-cols-5">
           <div className="space-y-6 md:col-span-3">
-            <FileUpload 
-              onFilesSelected={handleFilesSelected}
-            />
-            
-            <ExperimentForm 
-              onSubmit={handleExperimentSubmit}
-              isLoading={isProcessing}
-            />
+            <FileUpload onFilesSelected={handleFilesSelected} />
+            <ExperimentForm onSubmit={handleExperimentSubmit} isLoading={isProcessing} />
 
             {isReadyToCommit && (
               <div className="space-y-4">
-                {getValidationStatusIndicator()}
-                
-                <div className="flex justify-end">
-                  <Button 
-                    onClick={handleCommitToDatabase}
-                    disabled={validationStatus === "error" || stages[4].status === "pending" || stages[4].status === "completed"}
-                  >
-                    {stages[4].status === "completed" ? (
-                      <>
-                        <Check className="mr-2 h-4 w-4" />
-                        Committed to Database
-                      </>
-                    ) : stages[4].status === "pending" ? (
-                      "Saving to Database..."
-                    ) : (
-                      <>
-                        <HardDrive className="mr-2 h-4 w-4" />
-                        Commit to Database
-                      </>
-                    )}
-                  </Button>
-                </div>
+                <ValidationResultDisplay validationStatus={validationStatus} />
+                <ActionButtons 
+                  onCommit={handleCommitToDatabase}
+                  validationStatus={validationStatus}
+                  persistenceStatus={stages[4].status}
+                />
               </div>
             )}
           </div>
           
           <div className="md:col-span-2">
-            <PipelineStages 
+            <ProcessingPipeline 
               stages={stages}
               currentStage={currentStage}
+              pipelineStarted={pipelineStarted}
             />
-
-            {!pipelineStarted && (
-              <div className="mt-6 rounded-lg border-2 border-dashed p-8 text-center">
-                <UploadIcon className="mx-auto h-12 w-12 text-muted-foreground/60" />
-                <h3 className="mt-4 text-lg font-medium">Ready to Process</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Upload files and configure experiment settings, then click "Start Processing" to begin.
-                </p>
-                <div className="mt-4 flex items-center justify-center text-sm text-muted-foreground">
-                  <span>Configure</span>
-                  <ChevronRight className="h-4 w-4" />
-                  <span>Process</span>
-                  <ChevronRight className="h-4 w-4" />
-                  <span>Validate</span>
-                  <ChevronRight className="h-4 w-4" />
-                  <span>Commit</span>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-        {previewData.length > 0 && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Data Preview</h3>
-            <DataTable 
-              data={previewData}
-              columns={columns}
-              maxHeight={400}
-            />
-          </div>
-        )}
+        <DataPreviewSection data={previewData} />
       </div>
     </MainLayout>
   );

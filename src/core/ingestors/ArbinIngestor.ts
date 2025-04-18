@@ -2,9 +2,6 @@
 import { BaseIngestor, IngestorConfig, IngestorMetadata } from './BaseIngestor';
 import { dynamicLoader } from '../dynamic_loader';
 
-// Register this ingestor with the dynamic loader
-dynamicLoader.registerIngestor('arbin_cycler', ArbinIngestor);
-
 export class ArbinIngestor extends BaseIngestor {
   constructor() {
     const config: IngestorConfig = {
@@ -68,3 +65,6 @@ export class ArbinIngestor extends BaseIngestor {
     return processedData;
   }
 }
+
+// Register this ingestor with the dynamic loader after the class is defined
+dynamicLoader.registerIngestor('arbin_cycler', ArbinIngestor);

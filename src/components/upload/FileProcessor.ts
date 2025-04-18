@@ -1,6 +1,7 @@
 
 import { dynamicLoader } from '@/core/dynamic_loader';
 import { BaseIngestor } from '@/core/ingestors/BaseIngestor';
+import { LoadableModule } from '@/core/dynamic_loader';
 
 export class FileProcessor {
   static async processFile(file: File, machineType: string): Promise<any> {
@@ -16,7 +17,8 @@ export class FileProcessor {
         throw new Error(`No ingestor found for machine type: ${machineType}`);
       }
 
-      const ingestor = module as BaseIngestor;
+      // Cast to BaseIngestor after checking it's the right type
+      const ingestor = module as unknown as BaseIngestor;
 
       // Load and process the data
       const rawData = await ingestor.loadData(file);

@@ -1,5 +1,6 @@
 
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 
 interface FileValidationProps {
   files: File[];
@@ -38,5 +39,6 @@ export const FileValidation = ({
     return true;
   };
 
+  // We only need to expose the validate function
   return null; // This is a logic-only component
 };

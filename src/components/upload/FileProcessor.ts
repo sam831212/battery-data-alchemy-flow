@@ -6,15 +6,17 @@ export class FileProcessor {
   static async processFile(file: File, machineType: string): Promise<any> {
     try {
       // Get the appropriate ingestor based on machine type
-      const ingestor = await dynamicLoader.instantiateModule(
+      const module = await dynamicLoader.instantiateModule(
         'ingestor',
         machineType,
         {}
-      ) as BaseIngestor;
+      );
 
-      if (!ingestor) {
+      if (!module) {
         throw new Error(`No ingestor found for machine type: ${machineType}`);
       }
+
+      const ingestor = module as BaseIngestor;
 
       // Load and process the data
       const rawData = await ingestor.loadData(file);

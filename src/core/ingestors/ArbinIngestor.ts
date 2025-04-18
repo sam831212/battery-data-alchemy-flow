@@ -1,11 +1,10 @@
 
 import { BaseIngestor, IngestorConfig, IngestorMetadata } from './BaseIngestor';
+import { dynamicLoader } from '../dynamic_loader';
 
-@IngestorModule({
-  name: 'arbin_cycler',
-  description: 'Data ingestor for Arbin battery testing machines',
-  version: '1.0.0'
-})
+// Register this ingestor with the dynamic loader
+dynamicLoader.registerIngestor('arbin_cycler', ArbinIngestor);
+
 export class ArbinIngestor extends BaseIngestor {
   constructor() {
     const config: IngestorConfig = {
@@ -21,6 +20,16 @@ export class ArbinIngestor extends BaseIngestor {
     };
     
     super(config, metadata);
+  }
+
+  async initialize(): Promise<void> {
+    // Implementation of LoadableModule interface
+    return Promise.resolve();
+  }
+
+  getName(): string {
+    // Implementation of LoadableModule interface
+    return 'arbin_cycler';
   }
 
   async loadData(file: File): Promise<any> {

@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Check, HardDrive } from "lucide-react";
+import { StageStatusType } from "@/hooks/usePipelineSimulation";
 
 interface ActionButtonsProps {
   onCommit: () => void;

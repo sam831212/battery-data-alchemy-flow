@@ -44,9 +44,7 @@ export function CollapsibleSidebar() {
           <span className="text-lg font-semibold text-sidebar-foreground">Battery Data </span>
         </div>
         <div className="flex-1" />
-        <SidebarTrigger className="h-8 w-8 rounded-md hover:bg-sidebar-accent">
-          {state === "expanded" ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </SidebarTrigger>
+        
       </SidebarHeader>
       <SidebarContent className="px-2 py-4">
         <SidebarMenu>

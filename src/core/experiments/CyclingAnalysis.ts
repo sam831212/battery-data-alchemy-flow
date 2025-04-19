@@ -1,5 +1,6 @@
 
 import { BaseExperiment, ExperimentMetadata, ExperimentConfig, AnalysisResult } from './BaseExperiment';
+import { ExperimentModule } from '../module-decorator';
 import { z } from 'zod';
 
 const cyclingDataSchema = z.array(z.object({

@@ -1,4 +1,3 @@
-
 import { z } from 'zod';
 
 /**
@@ -22,7 +21,8 @@ export class DataPreprocessor {
 
   constructor(options: PreprocessingOptions) {
     // Validate the options using zod schema
-    this.options = preprocessingOptionsSchema.parse(options);
+    const validatedOptions = preprocessingOptionsSchema.parse(options);
+    this.options = validatedOptions;  // Assign the validated options
   }
 
   /**

@@ -1,6 +1,6 @@
-
 import { BaseExperiment, ExperimentMetadata, ExperimentConfig, AnalysisResult } from './BaseExperiment';
 import { ExperimentModule } from '../module-decorator';
+import { DataPreprocessor } from '../utils/preprocessor';
 import { z } from 'zod';
 
 const cyclingDataSchema = z.array(z.object({
@@ -19,6 +19,8 @@ type CyclingData = z.infer<typeof cyclingDataSchema>;
   version: '1.0.0',
 })
 export class CyclingAnalysis extends BaseExperiment {
+  private preprocessor: DataPreprocessor;
+
   constructor() {
     const config: ExperimentConfig = {
       requiredFields: ['timestamp', 'current', 'voltage', 'capacity'],
@@ -35,6 +37,12 @@ export class CyclingAnalysis extends BaseExperiment {
     };
 
     super(config, metadata);
+
+    this.preprocessor = new DataPreprocessor({
+      removeOutliers: true,
+      smoothingWindow: 5,
+      requiredFields: config.requiredFields,
+    });
   }
 
   async validateData(data: unknown): Promise<boolean> {
@@ -58,12 +66,15 @@ export class CyclingAnalysis extends BaseExperiment {
       };
     }
 
-    const cyclingData = data as CyclingData;
-    const metrics: Record<string, number> = {};
-    const processedData: Record<string, unknown> = {};
-    const warnings: string[] = [];
-
     try {
+      // Preprocess the data first
+      const preprocessedData = this.preprocessor.preprocess(data as unknown[]);
+      const cyclingData = preprocessedData as CyclingData[];
+      
+      const metrics: Record<string, number> = {};
+      const processedData: Record<string, unknown> = {};
+      const warnings: string[] = [];
+
       // Calculate C-rates for each data point
       const cRates = cyclingData.map(point => 
         this.calculateCRate(
@@ -105,7 +116,7 @@ export class CyclingAnalysis extends BaseExperiment {
       processedData.cRates = cRates;
       processedData.socValues = socValues;
       processedData.normalizedTimestamps = timestamps;
-
+      
       return {
         success: true,
         data: processedData,

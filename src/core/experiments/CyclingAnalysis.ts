@@ -42,7 +42,7 @@ export class CyclingAnalysis extends BaseExperiment {
     this.preprocessor = new DataPreprocessor({
       removeOutliers: true,
       smoothingWindow: 5,
-      requiredFields: config.requiredFields,
+      requiredFields: config.requiredFields, // Explicitly provide the required fields
     });
   }
 

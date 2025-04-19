@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 /**
@@ -7,7 +8,7 @@ import { z } from 'zod';
 export interface PreprocessingOptions {
   removeOutliers?: boolean;
   smoothingWindow?: number;
-  requiredFields: string[];  // Changed to be required
+  requiredFields: string[];  // This is required
 }
 
 export const preprocessingOptionsSchema = z.object({

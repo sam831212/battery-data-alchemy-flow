@@ -1,4 +1,3 @@
-
 import { BaseExperiment, ExperimentConfig, ExperimentMetadata, AnalysisResult } from './BaseExperiment';
 
 interface CyclingData {
@@ -85,4 +84,3 @@ export class CyclingExperiment extends BaseExperiment {
     );
   }
 }
-

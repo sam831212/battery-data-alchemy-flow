@@ -1,3 +1,4 @@
+
 import { BaseExperiment, ExperimentMetadata, ExperimentConfig, AnalysisResult } from './BaseExperiment';
 import { ExperimentModule } from '../module-decorator';
 import { DataPreprocessor } from '../utils/preprocessor';
@@ -69,7 +70,7 @@ export class CyclingAnalysis extends BaseExperiment {
     try {
       // Preprocess the data first
       const preprocessedData = this.preprocessor.preprocess(data as unknown[]);
-      const cyclingData = preprocessedData as CyclingData[];
+      const cyclingData = preprocessedData as CyclingData;
       
       const metrics: Record<string, number> = {};
       const processedData: Record<string, unknown> = {};

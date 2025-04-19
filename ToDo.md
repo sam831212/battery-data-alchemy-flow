@@ -1,3 +1,4 @@
+
 # Project ToDo List
 
 ## 1. Project Setup
@@ -18,7 +19,7 @@
 
 ## 4. Experiment Analysis & Preprocessing
 - [x] Abstract Experiment Class: Create base_experiment.ts for experiment-specific calculations.
-- [ ] Analysis Modules: Implement specific analysis modules (e.g., experiment_type_A.ts) incorporating calculations such as C-rate, SOC ranges, and timestamp adjustments.
+- [x] Analysis Modules: Implement specific analysis modules (e.g., experiment_type_A.ts) incorporating calculations such as C-rate, SOC ranges, and timestamp adjustments.
 - [ ] Preprocessing Logic: Develop preprocessing routines to filter, extract, and compute required fields from detail files.
 
 ## 5. Data Transformation & Validation

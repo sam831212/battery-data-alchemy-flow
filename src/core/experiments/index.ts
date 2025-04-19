@@ -1,6 +1,8 @@
 
 import { dynamicLoader } from '../dynamic_loader';
-import { CyclingExperiment } from './CyclingExperiment';
+import { CyclingAnalysis } from './CyclingAnalysis';
 
-// Register the cycling experiment class (constructor)
-dynamicLoader.registerExperiment('cycling', CyclingExperiment);
+// Register experiment modules
+dynamicLoader.registerExperiment('cycling_analysis', CyclingAnalysis);
+
+console.log('Experiment modules registered');

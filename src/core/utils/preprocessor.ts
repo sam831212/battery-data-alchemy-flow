@@ -13,16 +13,15 @@ export interface PreprocessingOptions {
 export const preprocessingOptionsSchema = z.object({
   removeOutliers: z.boolean().optional().default(false),
   smoothingWindow: z.number().positive().optional().default(5),
-  requiredFields: z.array(z.string()).min(1)  // Ensure at least one field is present
+  requiredFields: z.array(z.string()).min(1).default([])  // Making it required by removing optional()
 });
 
 export class DataPreprocessor {
   private options: PreprocessingOptions;
 
   constructor(options: PreprocessingOptions) {
-    // Validate the options using zod schema
     const validatedOptions = preprocessingOptionsSchema.parse(options);
-    this.options = validatedOptions;  // Assign the validated options
+    this.options = validatedOptions as PreprocessingOptions;  // Type assertion to ensure type safety
   }
 
   /**

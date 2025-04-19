@@ -8,7 +8,7 @@
 
 import { dynamicLoader } from './dynamic_loader';
 import { ModuleInfo } from '../utils/moduleRegistry';
-import { LoadableModule } from './dynamic_loader';
+import { LoadableModule } from './interfaces/module';
 
 /**
  * Decorator for registering ingestor modules

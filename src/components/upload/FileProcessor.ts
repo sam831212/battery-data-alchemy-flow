@@ -1,7 +1,7 @@
 
 import { dynamicLoader } from '@/core/dynamic_loader';
 import { BaseIngestor } from '@/core/ingestors/BaseIngestor';
-import { LoadableModule } from '@/core/dynamic_loader';
+import { LoadableModule } from '@/core/interfaces/module';
 
 export class FileProcessor {
   static async processFile(file: File, machineType: string): Promise<any> {

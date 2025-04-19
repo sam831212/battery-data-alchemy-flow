@@ -1,6 +1,6 @@
 
 import { z } from 'zod';
-import { LoadableModule } from '../dynamic_loader';
+import { LoadableModule } from '../interfaces/module';
 
 export interface ExperimentMetadata {
   experimentType: string;

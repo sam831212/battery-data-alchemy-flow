@@ -40,7 +40,7 @@ export function CollapsibleSidebar() {
   return <Sidebar>
       <SidebarHeader className="flex h-16 items-center border-b border-sidebar-border bg-sidebar px-4">
         <div className="flex items-center gap-2 px-2">
-          <FileCode className="h-6 w-6 text-battery-500" />
+          
           <span className="text-lg font-semibold text-sidebar-foreground">Battery Data </span>
         </div>
         <div className="flex-1" />

@@ -17,7 +17,7 @@
 - [x] File Upload Integration: Develop components for CSV file upload and meta information extraction.
 
 ## 4. Experiment Analysis & Preprocessing
-- [ ] Abstract Experiment Class: Create base_experiment.ts for experiment-specific calculations.
+- [x] Abstract Experiment Class: Create base_experiment.ts for experiment-specific calculations.
 - [ ] Analysis Modules: Implement specific analysis modules (e.g., experiment_type_A.ts) incorporating calculations such as C-rate, SOC ranges, and timestamp adjustments.
 - [ ] Preprocessing Logic: Develop preprocessing routines to filter, extract, and compute required fields from detail files.
 

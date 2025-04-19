@@ -1,5 +1,6 @@
 
 import { z } from 'zod';
+import { LoadableModule } from '../dynamic_loader';
 
 export interface ExperimentMetadata {
   experimentType: string;
@@ -20,7 +21,7 @@ export interface AnalysisResult {
   warnings: string[];
 }
 
-export abstract class BaseExperiment {
+export abstract class BaseExperiment implements LoadableModule {
   protected config: ExperimentConfig;
   protected metadata: ExperimentMetadata;
 
@@ -31,6 +32,12 @@ export abstract class BaseExperiment {
 
   abstract analyze(data: unknown): Promise<AnalysisResult>;
   abstract validateData(data: unknown): Promise<boolean>;
+  
+  // Implement initialize method required by LoadableModule interface
+  async initialize(): Promise<void> {
+    // Default implementation - can be overridden by subclasses
+    console.log(`Initializing ${this.metadata.experimentType} experiment`);
+  }
   
   protected calculateCRate(capacity: number, current: number): number {
     return Math.abs(current / capacity);
@@ -51,4 +58,3 @@ export abstract class BaseExperiment {
     return this.metadata.experimentType;
   }
 }
-

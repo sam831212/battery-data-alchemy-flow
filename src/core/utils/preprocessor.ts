@@ -1,4 +1,3 @@
-
 import { z } from 'zod';
 
 /**
@@ -8,20 +7,25 @@ import { z } from 'zod';
 export interface PreprocessingOptions {
   removeOutliers?: boolean;
   smoothingWindow?: number;
-  requiredFields: string[];
+  requiredFields: string[];  // Make this required
 }
 
 export const preprocessingOptionsSchema = z.object({
   removeOutliers: z.boolean().optional().default(false),
   smoothingWindow: z.number().positive().optional().default(5),
-  requiredFields: z.array(z.string()).min(1)
+  requiredFields: z.array(z.string()).min(1)  // Ensure at least one field
 });
 
 export class DataPreprocessor {
   private options: PreprocessingOptions;
 
   constructor(options: PreprocessingOptions) {
-    this.options = preprocessingOptionsSchema.parse(options);
+    // Validate the options using zod schema
+    this.options = preprocessingOptionsSchema.parse({
+      removeOutliers: options.removeOutliers ?? false,
+      smoothingWindow: options.smoothingWindow ?? 5,
+      requiredFields: options.requiredFields
+    });
   }
 
   /**

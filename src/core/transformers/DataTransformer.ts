@@ -7,19 +7,26 @@ export interface TransformationConfig {
   mappings: Record<string, (value: any) => any>;
 }
 
-// Update the schema to make all fields required to match the interface
+// Define the schema with explicit parsing to ensure all fields are required
 export const transformationConfigSchema = z.object({
   sourceFields: z.array(z.string()).min(1),
   targetFields: z.array(z.string()).min(1),
   mappings: z.record(z.function().args(z.any()).returns(z.any()))
-}).strict(); // Add strict() to ensure all fields are required
+}).strict();
 
 export class DataTransformer {
   private config: TransformationConfig;
 
   constructor(config: TransformationConfig) {
-    const validatedConfig = transformationConfigSchema.parse(config);
-    this.config = validatedConfig;
+    // Validate the config
+    const parsedConfig = transformationConfigSchema.parse(config);
+    
+    // Explicitly assign to ensure TypeScript knows all required fields are present
+    this.config = {
+      sourceFields: parsedConfig.sourceFields,
+      targetFields: parsedConfig.targetFields,
+      mappings: parsedConfig.mappings
+    };
   }
 
   transform(data: unknown[]): Record<string, unknown>[] {

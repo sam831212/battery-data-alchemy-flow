@@ -7,11 +7,12 @@ export interface TransformationConfig {
   mappings: Record<string, (value: any) => any>;
 }
 
+// Update the schema to make all fields required to match the interface
 export const transformationConfigSchema = z.object({
   sourceFields: z.array(z.string()).min(1),
   targetFields: z.array(z.string()).min(1),
   mappings: z.record(z.function().args(z.any()).returns(z.any()))
-});
+}).strict(); // Add strict() to ensure all fields are required
 
 export class DataTransformer {
   private config: TransformationConfig;
@@ -38,7 +39,8 @@ export class DataTransformer {
           const sourceField = this.config.sourceFields.find(
             field => field.toLowerCase() === targetField.toLowerCase()
           );
-          if (sourceField && sourceField in item) {
+          if (sourceField && typeof item === 'object' && item !== null && sourceField in item) {
+            // Add type guard to ensure item is an object before accessing properties
             transformedItem[targetField] = (item as Record<string, unknown>)[sourceField];
           }
         }
